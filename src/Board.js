@@ -61,7 +61,6 @@
       );
     },
 
-
 /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
@@ -78,12 +77,38 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+    // loop through the rowindex and want to check if there are more than 1 queen
+      // if so then there is a conflict 
+        // return true right away
+      // if there is none
+        // return false at the end
     hasRowConflictAt: function(rowIndex) {
+      let row = this.rows()[rowIndex]; // array of rows, get the row that is the rowIndex
+      let count = 0;
+      for (let value of row) {
+        if (value === 1) {
+          count++;
+        }
+        if (count > 1) {
+          return true;
+        }
+      } 
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
+    // use the board's row function to get all the rows of the board
+    // we can just run function above to check each row on the board
+      // if there are no conflicts for that row then look at the next row,
+      // if there is a conflict, return true to show that there are row conflicts
+    // at the end if there are no conflicts just return false
     hasAnyRowConflicts: function() {
+      let rows = this.rows() // this is the board
+      for (let i = 0; i < rows.length; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -93,12 +118,46 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+
+    // Lets say we have colIndex = 1
+      // to check for that, we would want to go into the row and check for that same index in the row
+    // if there is a queen we want to count it
+    // Then go into the next row and check the colIndex and continue for each row
+      // We want to stop counting if the counter is greater than 1 and return true
+    
+     
     hasColConflictAt: function(colIndex) {
+      let rows = this.rows();
+      let counter = 0;
+      // the row in this case would the each inner array of the board
+      for (let row of rows) {
+        if (row[colIndex] === 1) {
+          counter++;
+        }
+        if (counter > 1) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
+
+    // we are now checking to see all cols to see if they have conflicts
+    // will use the function above to test each col
+    // if the function above returns true there is a conflict so return true
+    // if not then return false
+    // Our board is a square. So the # of columns = # of rows
+    // this.rows() invokes the function to equal the array of rows
+    // i in this case is the colIndex which is the same as the rowIndex
+    // note: To get the number of columns we would have to go inside the row to count the length
+      // insde of the row shows the columns
     hasAnyColConflicts: function() {
+      for (let i = 0; i < this.rows().length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
