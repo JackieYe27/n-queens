@@ -14,10 +14,46 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 
-
+// togglePiece: function(rowIndex, colIndex)
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
-
+  var solution; //fixme
+  // Create New Board
+  let board = new Board({n:n});
+  let rows = board.rows();
+  let boardLength = rows.length;
+  board.togglePiece(0,0);
+  let currentSpace = 1;
+  let totalSpaces = Math.pow(n, 2);
+  let pieceCount = 1;
+  // Toggle First Position
+  // Toggle Second Position
+  function helperRecursive(board) {
+    // Base Case
+    if (pieceCount === n) {
+      return board;
+    }
+    for (let i = 1; i < totalSpaces; i++) {
+      // after looping through we need new index for the col and row
+      let rowIndex = Math.floor(currentSpace / boardLength);
+      let colIndex = currentSpace % boardLength;
+      // toggle the new piece
+      board.togglePiece(rowIndex, colIndex);
+      // if that piece conflicts untoggle it
+      if (board.hasAnyRooksConflicts()) {
+        board.togglePiece(rowIndex, colIndex);
+      } else {
+        // piece has no conflict? so add it to count
+        pieceCount++;
+      }
+      // move to next space
+      currentSpace++;
+    }
+    return helperRecursive(board); // need to return, so solution evaluates to a board and not undefined
+  }
+    // if conflict, untoggletoggle third position, continue....
+    // if no conflict
+  // toggle next position
+  solution = helperRecursive(board).rows();
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -36,7 +72,7 @@ window.countNRooksSolutions = function(n) {
   function recursiveHelper(arr) {
     // Base Case: Boards have N-Rooks and are not attacking, return solution
     if (pieceCount === n) {
-      return arr;
+      solutionCount = arr.length;
     }
     // Temporary Storage Variable to Hold Working Boards
     let temp = [];
@@ -48,12 +84,12 @@ window.countNRooksSolutions = function(n) {
         let rowIdx = Math.floor(i / n);
         let colIdx = i % n;
         tempBoard.togglePiece(rowIdx, colIdx);
-        pieceCount++;
         // If there are no conflicts after adding a Rook, push into the temp array and run again
         if(!tempBoard.hasAnyRooksConflicts()) {
           temp.push(tempBoard);
         }
       }
+      pieceCount++;
     }
   };
   recursiveHelper([board]);
