@@ -220,14 +220,19 @@
       let colIdx = minorDiagonalColumnIndexAtFirstRow;
       let rowIdxStart = 0;
 
-      if (minorDiagonalColumnIndexAtFirstRow >= boardLength) {
+      if (minorDiagonalColumnIndexAtFirstRow > boardLength) {
         rowIdxStart = minorDiagonalColumnIndexAtFirstRow - 3;
         colIdx = boardLength - 1;
-        diagonalLength = boardLength - (minorDiagonalColumnIndexAtFirstRow - boardLength);
+        diagonalLength = boardLength - (minorDiagonalColumnIndexAtFirstRow - boardLength) + 1;
+      } else if (minorDiagonalColumnIndexAtFirstRow === boardLength) {
+        rowIdxStart = minorDiagonalColumnIndexAtFirstRow - 3;
+        colIdx = boardLength - 1;
+        diagonalLength = boardLength - (minorDiagonalColumnIndexAtFirstRow - boardLength + 1);
       }
       
       for (let i = rowIdxStart; i < diagonalLength; i++) {
         // i.e. rows[0][1]
+        if (rows[i] === undefined) debugger;
         if (rows[i][colIdx] === 1) {
           counter++;
         }
