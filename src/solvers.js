@@ -21,10 +21,9 @@ window.findNRooksSolution = function(n) {
   let board = new Board({n:n});
   let rows = board.rows();
   let boardLength = rows.length;
-  board.togglePiece(0,0);
-  let currentSpace = 1;
+  let currentSpace = 0;
   let totalSpaces = Math.pow(n, 2);
-  let pieceCount = 1;
+  let pieceCount = 0;
   // Toggle First Position
   // Toggle Second Position
   function helperRecursive(board) {
@@ -32,7 +31,7 @@ window.findNRooksSolution = function(n) {
     if (pieceCount === n) {
       return board;
     }
-    for (let i = 1; i < totalSpaces; i++) {
+    for (let i = 0; i < totalSpaces; i++) {
       // after looping through we need new index for the col and row
       let rowIndex = Math.floor(currentSpace / boardLength);
       let colIndex = currentSpace % boardLength;
@@ -65,38 +64,88 @@ window.findNRooksSolution = function(n) {
   // base case = n rooks on the board
   // create storage for arrays that work that will be used as the arguments for the next call
 window.countNRooksSolutions = function(n) {
-  let board = new Board(n); // 2x2 Board
-  let totalSpaces = Math.pow(n, 2); // 4 Total Spaces
-  let pieceCount = 0;
-  let solutionCount = 0; 
-  function recursiveHelper(arr) {
-    // Base Case: Boards have N-Rooks and are not attacking, return solution
-    if (pieceCount === n) {
-      solutionCount = arr.length;
+  let solutionCount = 0;
+  let newBoard = new Board({n:n});
+
+  function recurse(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
     }
-    // Temporary Storage Variable to Hold Working Boards
-    let temp = [];
-    // Loop Through Every Board from Input Array
-    for (let j = 0; j < arr.length; j++) {
-      // Loop Through Every Space for Each Board
-      for (let i = 0; i < totalSpaces; i++); {
-        let tempBoard = arr[j]; 
-        let rowIdx = Math.floor(i / n);
-        let colIdx = i % n;
-        tempBoard.togglePiece(rowIdx, colIdx);
-        // If there are no conflicts after adding a Rook, push into the temp array and run again
-        if(!tempBoard.hasAnyRooksConflicts()) {
-          temp.push(tempBoard);
-        }
+
+    for (let col = 0; col < n; col++) {
+      newBoard.togglePiece(row, col);
+      if (!newBoard.hasAnyRooksConflicts()) {
+        recurse(row + 1);
       }
-      pieceCount++;
+      newBoard.togglePiece(row, col);
     }
-  };
-  recursiveHelper([board]);
+  }
+  recurse(0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
-
+  // let solutionCount = 0;
+  // let totalSpaces = Math.pow(n, 2);
+  // let spaceStart = 0;
+  // let currentSpace = 0;
+  // let pieceCount = 0;
+  
+  // function recursionHelper(currentSpace) {
+  //   if (spaceStart === totalSpaces - 1) return;
+  //   if (currentSpace === totalSpaces) {
+  //     spaceStart++;
+  //     currentSpace = spaceStart;
+  //     pieceCount = 0;
+  //   }
+  //   let newBoard = new Board({n:n});
+  //   // let initColIdx = spaceStart % n;
+  //   // let initRowIdx = Math.floor(spaceStart / n);
+  //   // newBoard.togglePiece(initRowIdx, initColIdx);
+  //   for (let i = spaceStart; i < totalSpaces; i++) {
+  //     let colIdx = i % n;
+  //     let rowIdx = Math.floor(i / n);
+  //     if (newBoard.rows()[rowIdx][colIdx] === 0) {
+  //       newBoard.togglePiece(rowIdx, colIdx);
+  //       if (newBoard.hasAnyRooksConflicts()) {
+  //         newBoard.togglePiece(rowIdx, colIdx);
+  //       } else {
+  //         pieceCount++;
+  //         if (pieceCount === n) {
+  //           solutionCount++;
+  //           newBoard.togglePiece(rowIdx, colIdx);
+  //           pieceCount--;
+  //         }
+  //       }
+  //     }
+  //     currentSpace++;
+  //   }
+  //   recursionHelper(currentSpace);
+  // }
+  // recursionHelper(currentSpace);
+  // function helperRecursive() {
+    //   let inProgressBoards = [];
+  //   let currentSpace = 0;
+  //   // Base Case
+  //   if (pieceCount === n) return boardArrays;
+  //   // boardArrays at every index will have its own board
+  //   let rows = boardArrays[0].rows();
+  //   let tempArray = rows.slice();
+  //   for (let i = 0; i < totalSpaces; i++) {
+      
+  //     let currentBoard = new Board(tempArray);
+  //     let colIndex = currentSpace % n;
+  //     let rowIndex = Math.floor(currentSpace / n);
+  //     if (currentBoard.rows()[rowIndex][colIndex] === 0) {
+  //       currentBoard.togglePiece(rowIndex, colIndex); // don't toggle off existing rook
+  //     }
+  //     inProgressBoards.push(currentBoard);
+  //     console.log(inProgressBoards);
+  //     currentSpace++;
+  //   }
+  // }
+  // helperRecursive();
+  //workingBoards = helperRecursive(workingBoards);
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
